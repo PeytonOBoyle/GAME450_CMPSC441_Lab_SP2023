@@ -23,3 +23,7 @@ Your task is to write a function that can translate from strings of length 2 to 
 
 For example, calling get_row_col("A3") should return the tuple (2, 0) because A3 corresponds to the row at index 2 and column at index 0in the board.
 '''
+
+def get_row_col(position):
+    '''Take string of letter-number as input and translate it to its appropriate position on the tic ta toe board. Return result as a tuple'''
+    
