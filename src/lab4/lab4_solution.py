@@ -44,18 +44,79 @@ class AiPlayer(Player):
         super().__init__(name)
         self.initial_weapon = random_weapon_select()
     
+    def check_single(self):
+        #Check last five moves. If all of them are the same, we are most likely fighting a single or a switch that has yet to change
+        five_moves_ago = self.opponent_choices[-5]
+
+        for x in range(-4, 0):
+            if x != five_moves_ago:
+                return(False)
+
+        return(True)
+    
+    def check_switch(self):
+        #Check last five moves. If it is two volleys of the same move in a row, such as 0, 0, 0, 1, 1, then it is most likely a switch statement
+        five_moves_ago = self.opponent_choices[-5]
+
+        #new_move is set to 3 right now, but will be set to a real move if the sequence changes in the for loop
+        new_move = 3
+
+        for x in range(-4, 0):
+            #Continue if the sequence has not changed yet
+            if self.opponent_choices[x] == five_moves_ago:
+                continue
+            
+            #If the sequence changes, register that as the new move
+            if self.opponent_choices[x] != five_moves_ago and new_move == 3:
+                new_move = self.opponent_choices[x]
+                continue
+
+            #If the sequence changess a third time, then this cannot be a switch statement
+            if self.opponent_choices[x] != new_move:
+                return False
+
+        return True
+
+
     def weapon_selecting_strategy(self):
-        pass
+        #Initial move is chosen a random
+        if len(self.opponent_choices) == 0:
+            return  self.initial_weapon
+        
+        #Check last five moves
+        #If the opponent consistently uses a certain number, it is most likely a single or a switch, such as 0, 0, 0, 0, 0
+        elif len(self.opponent_choices) > 4 and self.check_single():
+            return(self.opponent_choices[-1]+1)%3
+
+        #If the opponent consistently uses one move followed by another, it is most likely a switch, such as 0, 0, 0, 1, 1
+        elif len(self.opponent_choices) > 4 and self.check_switch():
+            return(self.opponent_choices[-1]+1)%3
+
+        #If it is none of these, then the opponent is most likely a mimic
+
+        #Check if the thrown hand has changed
+        #elif len(self.opponent_choices) > 4:
+        elif self.opponent_choices[0] != self.opponent_choices[-1] and len(self.opponent_choices) >= 2:
+            return(self.my_choices[-1]+1)%3
+
+        #For the first four turns, we are just gathering data, so we can use the function below to guarentee wins against the first two enemy types and at least stall the mimics
+        else:
+            return(self.opponent_choices[-1]+1)%3
+
+    
+
+    #HIGHER THAN 95 - 1 point credit
 
 
 if __name__ == '__main__':
     final_tally = [0]*3
     for agent in range(3):
-        for i in range(100):
-            tally = [score for _, score in run_game(AiPlayer("AI"), 100, agent)]
+        #Change the 10s to 100 after this lab
+        for i in range(10):
+            tally = [score for _, score in run_game(AiPlayer("AI"), 10, agent)]
             if sum(tally) == 0:
                 final_tally[agent] = 0
             else:
-            final_tally[agent] += tally[0]/sum(tally)
+                final_tally[agent] += tally[0]/sum(tally)
 
     print("Final tally: ", final_tally)  
