@@ -44,18 +44,26 @@ class AiPlayer(Player):
         super().__init__(name)
         self.initial_weapon = random_weapon_select()
     
+    #Checks to see if the AI has a pattern resembling the Agent Single pattern
     def check_single(self):
-        #Check last five moves. If all of them are the same, we are most likely fighting a single or a switch that has yet to change
+        #Check if the last five moves were all the same. If so, return true. If not, return false
+
+        #Start with the fifth last move as the initial value
         five_moves_ago = self.opponent_choices[-5]
 
+        #Check if the last four moves are the same as the fifth last move
         for x in range(-4, 0):
+            #If any of the moves differ, we are not dealing with the Single pattern
             if x != five_moves_ago:
                 return(False)
 
         return(True)
     
+    #Checks to see if the AI has a pattern resembling the Agent Switch pattern
     def check_switch(self):
         #Check last five moves. If it is two volleys of the same move in a row, such as 0, 0, 0, 1, 1, then it is most likely a switch statement
+        
+        #Start with the fifth last move as the initial value
         five_moves_ago = self.opponent_choices[-5]
 
         #new_move is set to 3 right now, but will be set to a real move if the sequence changes in the for loop
@@ -66,12 +74,12 @@ class AiPlayer(Player):
             if self.opponent_choices[x] == five_moves_ago:
                 continue
             
-            #If the sequence changes, register that as the new move
+            #If the sequence changes, register that as the new move and check that 
             if self.opponent_choices[x] != five_moves_ago and new_move == 3:
                 new_move = self.opponent_choices[x]
                 continue
 
-            #If the sequence changess a third time, then this cannot be a switch statement
+            #If the sequence changes a third time, then this cannot possibly be a switch statement
             if self.opponent_choices[x] != new_move:
                 return False
 
@@ -83,7 +91,10 @@ class AiPlayer(Player):
         if len(self.opponent_choices) == 0:
             return  self.initial_weapon
         
-        #Check last five moves
+
+        #Use the two function below to detect if enemy is a single or switch
+        #Do this by checking the last five moves
+
         #If the opponent consistently uses a certain number, it is most likely a single or a switch, such as 0, 0, 0, 0, 0
         elif len(self.opponent_choices) > 4 and self.check_single():
             return(self.opponent_choices[-1]+1)%3
@@ -92,14 +103,14 @@ class AiPlayer(Player):
         elif len(self.opponent_choices) > 4 and self.check_switch():
             return(self.opponent_choices[-1]+1)%3
 
-        #If it is none of these, then the opponent is most likely a mimic
 
-        #Check if the thrown hand has changed
-        #elif len(self.opponent_choices) > 4:
+        #If it is none of these, then the opponent is most likely a mimic or we are in the first five moves, where we have not gathered enough data
+
+        #Check if the thrown hand has changed from two moves ago to one move ago. If it has changed, we are fighting a mimic, as the switch would have been caught before and this is the only other function that changes values
         elif self.opponent_choices[0] != self.opponent_choices[-1] and len(self.opponent_choices) >= 2:
             return(self.my_choices[-1]+1)%3
 
-        #For the first four turns, we are just gathering data, so we can use the function below to guarentee wins against the first two enemy types and at least stall the mimics
+        #If the function is not changing in the first five moves, then it is either a single or switch, which means we can fight it early on with the same method
         else:
             return(self.opponent_choices[-1]+1)%3
 
@@ -111,9 +122,8 @@ class AiPlayer(Player):
 if __name__ == '__main__':
     final_tally = [0]*3
     for agent in range(3):
-        #Change the 10s to 100 after this lab
-        for i in range(10):
-            tally = [score for _, score in run_game(AiPlayer("AI"), 10, agent)]
+        for i in range(100):
+            tally = [score for _, score in run_game(AiPlayer("AI"), 100, agent)]
             if sum(tally) == 0:
                 final_tally[agent] = 0
             else:
