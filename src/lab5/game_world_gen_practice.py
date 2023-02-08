@@ -30,6 +30,8 @@ from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
 
 ''' Create helper functions here '''
 
+
+
 if __name__ == "__main__":
     pygame.init()
     size = width, height = 640, 480
@@ -42,10 +44,11 @@ if __name__ == "__main__":
 
     city_names = ['Morkomasto', 'Morathrad', 'Eregailin', 'Corathrad', 'Eregarta',
                   'Numensari', 'Rhunkadi', 'Londathrad', 'Baernlad', 'Forthyr']
-    city_locations = [] 
-    routes = []
+    city_locations = get_randomly_spread_cities(size, len(city_names))
+    routes = get_routes(city_names)
 
     ''' Setup cities and routes in here'''
+
 
     city_locations_dict = {name: location for name, location in zip(city_names, city_locations)}
     random.shuffle(routes)
@@ -60,7 +63,15 @@ if __name__ == "__main__":
         screen.blit(pygame_surface, (0, 0))
 
         ''' draw cities '''
+        for city in city_locations:
+            pygame.draw.circle(pygame_surface, 10, city, 5)
 
         ''' draw first 10 routes '''
+        for route in routes:
+            'Get the start_pos and end position by using the dictionary to find the coordinates of the '
+            start_pos = city_locations_dict[route[0]]
+            end_pos = city_locations_dict[route[1]]
+            pygame.draw.line(pygame_surface, 10, start_pos, end_pos)
+
 
         pygame.display.flip()
