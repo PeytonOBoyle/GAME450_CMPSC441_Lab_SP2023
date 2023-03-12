@@ -13,6 +13,7 @@ fulfilled. Clearly explain in comments which line of code and variables are used
 import matplotlib.pyplot as plt
 import pygad
 import numpy as np
+import math
 
 import sys
 from pathlib import Path
@@ -20,6 +21,7 @@ from pathlib import Path
 sys.path.append(str((Path(__file__) / ".." / ".." / "..").resolve().absolute()))
 
 from src.lab5.landscape import elevation_to_rgba
+from src.lab5.landscape import get_elevation
 
 
 def game_fitness(cities, idx, elevation, size):
@@ -30,6 +32,36 @@ def game_fitness(cities, idx, elevation, size):
     2. The cities should have a realistic distribution across the landscape
     3. The cities may also not be on top of mountains or on top of each other
     """
+
+    # Check to make sure the city is not underwater
+    for city in cities:
+        # 1 & 3 0 check that the city is not too high up and not too low down
+        if ((0.45 < elevation.item(city)) and (elevation.item(city) < 0.55)):
+            fitness += 0.3
+        
+        # Create coordinates for this city
+        x1 = city%100
+        y1 = city/100
+        
+        # Check distance to other cities
+        for cityb in cities:
+            # Skip this city if it is the same one
+            if not (city == cityb):
+                # Create coordinates for cityb
+                x2 = cityb%100
+                y2 = cityb/100
+
+                #Find distance
+                distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+                # Give the algorithm more points depending on how far away each town is
+                if (distance > 9):
+                    fitness += 0.3
+                elif (distance > 5):
+                    fitness += 0.2
+                elif (distance > 1):
+                    fitness += 0.1
+    
     return fitness
 
 
@@ -114,7 +146,9 @@ if __name__ == "__main__":
     size = 100, 100
     n_cities = 10
     elevation = []
-    """ initialize elevation here from your previous code"""
+    #initialize elevation here from your previous code
+    elevation = get_elevation(size)
+
     # normalize landscape
     elevation = np.array(elevation)
     elevation = (elevation - elevation.min()) / (elevation.max() - elevation.min())

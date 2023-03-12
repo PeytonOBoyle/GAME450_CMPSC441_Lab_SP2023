@@ -122,11 +122,12 @@ class AiPlayer(Player):
 if __name__ == '__main__':
     final_tally = [0]*3
     for agent in range(3):
-        for i in range(100):
-            tally = [score for _, score in run_game(AiPlayer("AI"), 100, agent)]
+        for i in range(10):
+            tally = [score for _, score in run_game(AiPlayer("AI"), 10, agent)]
             if sum(tally) == 0:
                 final_tally[agent] = 0
             else:
                 final_tally[agent] += tally[0]/sum(tally)
+        
 
     print("Final tally: ", final_tally)  
