@@ -10,6 +10,9 @@ from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
 import numpy as np
 
+from sklearn.preprocessing import Normalizer
+from sklearn import preprocessing
+
 data = pd.read_csv("src/lab10/heart.csv")
 
 # Transform the categorical variables into dummy variables.
@@ -34,10 +37,45 @@ print("Accuracy of model: {}\n".format(sklearn_model.score(x_test, y_test)))
 
 
 """ Improve the model by normalizing the input data. """
+
+"""
 # sklearn_model = KNeighborsClassifier(n_neighbors = 5, weights = 'distance', algorithm = 'ball_tree', leaf_size = 15)
 y_pred = sklearn_model.predict(x_test)
 cm = confusion_matrix(y_test, y_pred, normalize = 'all')
 sklearn_model.fit(x_train, y_train)
 print(cm)
+"""
+
+"""
+scaler = Normalizer().fit(x)
+normalizedX = scaler.transform(x)
+normalizedX = df.drop(["HeartDisease"], axis=1)
+
+x_train, x_test, y_train, y_test = train_test_split(
+    normalizedX, y, test_size=0.2, random_state=25
+)
+"""
+
+
+normalized_x_train = preprocessing.normalize(x_train)
+
+sklearn_model.fit(normalized_x_train, y_train)
+
+print(sklearn_model)
+
+print(normalized_x_train)
+
+print(x_train)
+
+"""
+normalized_x = preprocessing.normalize(x)
+normalized_x = df.drop(["HeartDisease"], axis=1)
+
+x_train, x_test, y_train, y_test = train_test_split(
+    normalized_x, y, test_size=0.2, random_state=25
+)
+
+sklearn_model.fit(x_train, y_train)
+"""
 
 print("Accuracy of improved model: {}\n".format(sklearn_model.score(x_test, y_test)))
