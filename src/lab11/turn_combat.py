@@ -35,6 +35,12 @@ class CombatPlayer(Player):
         self.weapon = self._action
         self.my_choices.append(self.action)
 
+    def setPercept(self, percept):
+        env_state = percept
+
+        if percept is not None:
+            self.current_env_state = env_state
+
     def damage(self):
         points = 10
         self.health -= points

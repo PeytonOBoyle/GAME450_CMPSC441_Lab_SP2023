@@ -45,6 +45,7 @@ def run_turn(currentGame, player, opponent, players):
 
     states = list(reversed([(player.health, player.weapon) for player in players]))
     for current_player, state in zip(players, states):
+        state = (player.health, opponent.health)
         current_player.selectAction(state)
         
         if(current_player == player):
@@ -56,19 +57,18 @@ def run_turn(currentGame, player, opponent, players):
     print("%s's health = %d" % (opponent.name, opponent.health))
     reward = currentGame.checkWin(player, opponent)
 
-    record = ((player.health, opponent.health), used_weapon, reward)
+
+
+    record = (state, used_weapon, reward)
     #Return the tuple with all the information
     return record
 
 
-def run_pygame_combat(combat_surface, screen, player_sprite):
+def run_pygame_combat(combat_surface, screen, player_sprite, players):
     currentGame = Combat()
-    player = PyGameHumanCombatPlayer("Legolas")
-    """ Add a line below that will reset the player object
-    to an instance of the PyGameAICombatPlayer class"""
-    player = PyGameAICombatPlayer("Legolas")
+    player = players[0]
+    opponent = players[1]
 
-    opponent = PyGameComputerCombatPlayer("Computer")
     opponent_sprite = Sprite(
         AI_SPRITE_PATH, (player_sprite.sprite_pos[0] - 100, player_sprite.sprite_pos[1])
     )

@@ -23,8 +23,11 @@ from lab11.agent_environment import get_combat_surface, setup_window
 from lab11.sprite import Sprite
 from lab2.cities_n_routes import get_randomly_spread_cities
 
-def run_episode():
-    actions = run_pygame_combat(combat_surface, screen, player_sprite)
+from lab11.pygame_ai_player import PyGameAICombatPlayer
+from lab11.pygame_combat import PyGameComputerCombatPlayer
+
+def run_episode(combat_surface, screen, player_sprite, players):
+    actions = run_pygame_combat(combat_surface, screen, player_sprite, players)
 
     return actions
 
@@ -51,6 +54,11 @@ if __name__ == "__main__":
     sprite_path = "assets/lego.png"
     player_sprite = Sprite(sprite_path, cities[0])
 
-    actions = run_episode()
+    player = PyGameAICombatPlayer("Legolas")
+    opponent = PyGameComputerCombatPlayer("Computer")
+
+    players = [player, opponent]
+
+    actions = run_episode(combat_surface, screen, player_sprite, players)
 
     print(actions)

@@ -31,12 +31,12 @@ class PyGameAICombatPlayer(CombatPlayer):
         self.turn = 0
 
     def weapon_selecting_strategy(self):
-        #Use Arrow when it isn't turn 6
-        if 6 < self.turn or self.turn < 6:
+        #Use Arrow when it isn't turn 7
+        if self.turn < 5:
             self.weapon = 1
         #Switch to Sword
         else:
-            self.weapon = 0
+            self.weapon = 2
         
         self.turn += 1
 
