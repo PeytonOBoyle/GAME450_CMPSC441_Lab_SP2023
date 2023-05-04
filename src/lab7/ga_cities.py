@@ -54,12 +54,16 @@ def game_fitness(cities, idx, elevation, size):
                 #Find distance
                 distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
+                #Find area of map
+                area = size[0] * size[1]
+                avgLength = (size[0] + size[1]) / 2
+
                 # Give the algorithm more points depending on how far away each town is
-                if (distance > 9):
+                if (distance > (area / (1000))):
                     fitness += 0.3
-                elif (distance > 5):
+                elif (distance > (area / (2000))):
                     fitness += 0.2
-                elif (distance > 1):
+                elif (distance > (area / (10000))):
                     fitness += 0.1
     
     return fitness
@@ -143,7 +147,7 @@ def show_cities(cities, landscape_pic, cmap="gist_earth"):
 if __name__ == "__main__":
     print("Initial Population")
 
-    size = 100, 100
+    size = 200, 200
     n_cities = 10
     elevation = []
     #initialize elevation here from your previous code

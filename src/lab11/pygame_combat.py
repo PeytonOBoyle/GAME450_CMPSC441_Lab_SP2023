@@ -59,4 +59,7 @@ def run_pygame_combat(combat_surface, screen, player_sprite):
         currentGame.takeTurn(player, opponent)
         print("%s's health = %d" % (player.name, player.health))
         print("%s's health = %d" % (opponent.name, opponent.health))
-        currentGame.checkWin(player, opponent)
+        #0 Player lost 1 Player Won 2 Draw
+        winValue = currentGame.checkWin(player, opponent)
+
+    return winValue
